@@ -1,9 +1,16 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import axios from 'axios'
+
+axios.get('http://10.70.2.60:1337/plano-de-melhorias/1').then(response => {
+  console.log(response);
+})
+
 
 export default function Home() {
   return (
+    
     <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
@@ -13,7 +20,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Primeiro Teste com Strapi
         </h1>
 
         <p className={styles.description}>
