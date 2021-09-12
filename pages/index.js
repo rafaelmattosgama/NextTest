@@ -1,14 +1,12 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import axios from 'axios'
-
-axios.get('http://10.70.2.60:1337/plano-de-melhorias/1').then(response => {
-  console.log(response);
-})
+import {ApolloClient, InMemoryCache, gql} from '@apollo/client'
 
 
-export default function Home() {
+
+export default function Home({planos}) {
+  console.log('Plano:', planos)
   return (
     
     <div className={styles.container}>
@@ -19,44 +17,10 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Primeiro Teste com Strapi
-        </h1>
+        
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
       </main>
 
       <footer className={styles.footer}>
@@ -73,4 +37,38 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export async function getStaticProps() {
+
+  const client = new ApolloClient({
+    uri: 'http://10.70.2.60:1337/graphql',
+    cache: new InMemoryCache
+  })
+
+  const { data } = await client.query({
+    query: gql`
+    query getPlanodemelhoria {
+      planoDeMelhoria (id: 1) {
+        id
+        Image_Doc{url}
+        Pilot{username}
+        Process
+        Type
+        Actions{Action_Description}
+        created_at
+        Source
+        Process
+        updated_at
+        Area
+      }
+    }
+  `
+  })
+
+  return {
+    props: {
+      planos: data.planoDeMelhoria
+    }
+  }
 }
