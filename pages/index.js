@@ -6,7 +6,9 @@ import {ApolloClient, InMemoryCache, gql} from '@apollo/client'
 
 
 export default function Home({planos}) {
-  console.log('Plano:', planos)
+  console.log('RawPlano:', planos)
+  // const obj = JSON.parse(plano)
+  // console.log('Plano:', obj)
   return (
     
     <div className={styles.container}>
@@ -17,7 +19,19 @@ export default function Home({planos}) {
       </Head>
 
       <main className={styles.main}>
-        
+
+      {planos.map((process, i) => (
+            <div key = {i}>
+            <h1 className={styles.title}>
+              {process.Process}
+            </h1>
+            </div>
+
+      ))}
+
+
+
+
 
         
 
@@ -48,8 +62,8 @@ export async function getStaticProps() {
 
   const { data } = await client.query({
     query: gql`
-    query getPlanodemelhoria {
-      planoDeMelhoria (id: 1) {
+    query getPlanodemelhorias {
+      planoDeMelhorias {
         id
         Image_Doc{url}
         Pilot{username}
@@ -66,9 +80,15 @@ export async function getStaticProps() {
   `
   })
 
+  // console.log('rawdata:', typeof data)
+
+  // const alldata = JSON.stringify(data.planoDeMelhorias)
+
+  // console.log('Json:', typeof alldata)
+
   return {
     props: {
-      planos: data.planoDeMelhoria
+      planos: data.planoDeMelhorias
     }
   }
 }
